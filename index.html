@@ -78,6 +78,43 @@
 
     canvas.addEventListener("mousemove", draw);
 
+    // Touch support
+canvas.addEventListener("touchstart", (e) => {
+  e.preventDefault();
+  painting = true;
+  drawTouch(e);
+});
+
+canvas.addEventListener("touchmove", (e) => {
+  e.preventDefault();
+  drawTouch(e);
+});
+
+canvas.addEventListener("touchend", () => {
+  painting = false;
+  ctx.beginPath();
+  updateTexture();
+});
+
+function drawTouch(e) {
+  if (!painting) return;
+
+  const touch = e.touches[0];
+  const rect = canvas.getBoundingClientRect();
+  const x = touch.clientX - rect.left;
+  const y = touch.clientY - rect.top;
+
+  ctx.lineWidth = penSize.value;
+  ctx.lineCap = "round";
+  ctx.strokeStyle = erasing ? "#ffffff" : colorPicker.value;
+
+  ctx.lineTo(x, y);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(x, y);
+}
+
+
     function draw(e) {
       if (!painting) return;
 
